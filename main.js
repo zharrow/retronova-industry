@@ -446,6 +446,12 @@ document.head.insertAdjacentHTML('beforeend', fallbackStyles);
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     window.arcadeWebsite = new ArcadeWebsite();
+    
+    // Vérification des éléments de fond
+    console.log('🎨 Éléments de fond trouvés:');
+    console.log('- Geometric BG:', document.querySelector('.geometric-bg'));
+    console.log('- Floating Orbs:', document.querySelector('.floating-orbs'));
+    console.log('- Orbs:', document.querySelectorAll('.orb').length);
 });
 
 // Optimisation des performances
