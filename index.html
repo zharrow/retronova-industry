@@ -2,11 +2,13 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arcade Connect - Bornes d'arcade nouvelle génération</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Inter Font (SF Pro alternative) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -19,156 +21,208 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
-    <!-- Loading Overlay -->
+    <!-- Background géométrique animé -->
+    <div class="geometric-bg"></div>
+    
+    <!-- Orbes flottants -->
+    <div class="floating-orbs">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+    
+    <!-- Loading -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loader"></div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
+    <!-- Navigation dots -->
+    <nav class="nav-dots" aria-label="Navigation sections">
+        <button class="nav-dot active" data-section="0" aria-label="Introduction"></button>
+        <button class="nav-dot" data-section="1" aria-label="Concept"></button>
+        <button class="nav-dot" data-section="2" aria-label="Accès"></button>
+        <button class="nav-dot" data-section="3" aria-label="Fonctionnalités"></button>
+        <button class="nav-dot" data-section="4" aria-label="Contact"></button>
+    </nav>
 
-    <div class="main-container">
-        <!-- Borne d'arcade 3D (fixée au centre) -->
-        <div class="arcade-machine-container" id="arcadeContainer">
-            <!-- La borne 3D Three.js sera injectée ici -->
+    <main class="main-container">
+        <!-- Borne d'arcade 3D -->
+        <div class="arcade-machine-container" id="arcadeContainer" aria-hidden="true">
+            <!-- Three.js canvas -->
         </div>
 
-        <!-- Section 1: Introduction (gauche) -->
+        <!-- Section 1: Hero -->
         <section class="section" data-section="intro">
             <div class="section-content">
-                <h1 class="section-title">Découvrez la borne d'arcade connectée nouvelle génération</h1>
-                <p class="section-subtitle">L'expérience rétro gaming réinventée pour l'ère numérique</p>
-                <p class="section-text">
-                    Plongez dans l'univers nostalgique des années 80-90 avec une technologie de pointe. 
-                    Nos bornes d'arcade connectées fusionnent le charme intemporel du rétro gaming 
-                    avec les innovations d'aujourd'hui : scoring en ligne, catalogue évolutif, 
-                    et expérience utilisateur repensée.
+                <h1 class="section-title text-balance">
+                    La borne d'arcade connectée nouvelle génération
+                </h1>
+                <p class="section-subtitle">
+                    L'expérience rétro gaming réinventée pour l'ère numérique
                 </p>
-                <a href="#concept" class="btn btn-primary">Découvrir le concept</a>
+                <p class="section-text">
+                    Fusionnez le charme intemporel du rétro gaming avec les innovations d'aujourd'hui. 
+                    Scoring en ligne, catalogue évolutif et expérience utilisateur repensée.
+                </p>
+                <div class="button-group">
+                    <a href="#concept" class="btn btn-primary">Découvrir le concept</a>
+                    <a href="#contact" class="btn btn-secondary">Demander une démo</a>
+                </div>
             </div>
         </section>
 
-        <!-- Section 2: Concept (droite) -->
+        <!-- Section 2: Concept -->
         <section class="section" data-section="concept">
             <div class="section-content">
-                <h2 class="section-title">Rétro dans l'âme, connectée par essence</h2>
+                <h2 class="section-title">
+                    Technologie de pointe, âme rétro
+                </h2>
                 <p class="section-text">
-                    Chaque borne embarque un Raspberry Pi 5 dernière génération, offrant des performances 
-                    fluides pour des milliers de jeux classiques. La connectivité WiFi permet une 
-                    synchronisation en temps réel des scores, des défis communautaires, et des mises à jour 
-                    automatiques du catalogue de jeux.
+                    Chaque borne embarque un Raspberry Pi 5 pour des performances fluides. 
+                    La connectivité WiFi permet une synchronisation en temps réel des scores 
+                    et des mises à jour automatiques du catalogue.
                 </p>
                 <p class="section-text">
-                    Design authentique inspiré des cabinets originaux, écran haute définition, 
-                    contrôles précis et son immersif : l'expérience arcade comme vous ne l'avez jamais vécue.
+                    Design authentique, écran haute définition, contrôles précis : 
+                    l'expérience arcade comme vous ne l'avez jamais vécue.
                 </p>
-                <a href="#access" class="btn btn-secondary">Voir les options d'accès</a>
+                <a href="#access" class="btn btn-accent">Explorer les options</a>
             </div>
         </section>
 
-        <!-- Section 3: Accès à une borne (gauche) -->
+        <!-- Section 3: Accès -->
         <section class="section" data-section="access">
             <div class="section-content">
-                <h2 class="section-title">Trois façons de vivre l'expérience</h2>
-                <p class="section-text">
-                    Que vous soyez particulier, entreprise ou organisateur d'événement, 
-                    nous avons la solution qui vous correspond.
-                </p>
+                <h2 class="section-title">
+                    Choisissez votre expérience
+                </h2>
                 
                 <div class="access-cards">
                     <div class="access-card">
-                        <h3 class="card-title">🛒 Achat</h3>
+                        <h3 class="card-title">
+                            <span class="card-icon">🛍️</span>
+                            Achat
+                        </h3>
                         <p class="card-text">
-                            Devenez propriétaire de votre borne d'arcade. Installation, 
-                            configuration et formation incluses. Support technique à vie.
+                            Devenez propriétaire de votre borne. Installation et formation incluses, 
+                            avec support technique à vie.
                         </p>
                     </div>
                     
                     <div class="access-card">
-                        <h3 class="card-title">📅 Location</h3>
+                        <h3 class="card-title">
+                            <span class="card-icon">📅</span>
+                            Location
+                        </h3>
                         <p class="card-text">
-                            Location flexible de 1 mois à 2 ans. Maintenance incluse, 
-                            catalogue de jeux évolutif, option d'achat en fin de contrat.
+                            Location flexible de 1 mois à 2 ans. Maintenance incluse et 
+                            catalogue évolutif.
                         </p>
                     </div>
                     
                     <div class="access-card">
-                        <h3 class="card-title">🎉 Événement</h3>
+                        <h3 class="card-title">
+                            <span class="card-icon">🎉</span>
+                            Événement
+                        </h3>
                         <p class="card-text">
-                            Location ponctuelle pour vos événements. Livraison, installation 
-                            et récupération assurées. Animation et support sur site disponibles.
+                            Location ponctuelle avec livraison et installation. 
+                            Animation sur site disponible.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 4: Fonctionnalités (droite) -->
+        <!-- Section 4: Fonctionnalités -->
         <section class="section" data-section="features">
             <div class="section-content">
-                <h2 class="section-title">Fonctionnalités qui font la différence</h2>
-                <p class="section-text">
-                    Une technologie de pointe au service de l'expérience utilisateur.
-                </p>
+                <h2 class="section-title">
+                    Des fonctionnalités pensées pour vous
+                </h2>
                 
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-icon">📱</div>
                         <h4>App Mobile</h4>
-                        <p>Contrôlez votre borne, consultez vos scores et défiez vos amis</p>
+                        <p>Contrôlez votre borne et consultez vos scores</p>
                     </div>
                     
                     <div class="feature-item">
                         <div class="feature-icon">🏆</div>
                         <h4>Scoring Global</h4>
-                        <p>Classements en ligne et tournois communautaires</p>
+                        <p>Classements en ligne et tournois</p>
                     </div>
                     
                     <div class="feature-item">
                         <div class="feature-icon">🎮</div>
-                        <h4>Catalogue Évolutif</h4>
-                        <p>Plus de 2000 jeux classiques, mises à jour régulières</p>
+                        <h4>2000+ Jeux</h4>
+                        <p>Catalogue évolutif mis à jour régulièrement</p>
                     </div>
                     
                     <div class="feature-item">
                         <div class="feature-icon">⚙️</div>
                         <h4>Personnalisation</h4>
-                        <p>Interface, éclairage et playlist sonore personnalisables</p>
+                        <p>Interface et éclairage personnalisables</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 5: Contact (centré) -->
+        <!-- Section 5: Contact -->
         <section class="section centered" data-section="contact">
             <div class="section-content">
-                <h2 class="section-title">Prêt à franchir le portail du rétro-futur ?</h2>
+                <h2 class="section-title">
+                    Prêt à franchir le portail ?
+                </h2>
                 <p class="section-text">
-                    Contactez-nous pour découvrir comment intégrer nos bornes d'arcade connectées 
-                    dans votre univers. Devis personnalisé et démonstration sur rendez-vous.
+                    Contactez-nous pour découvrir comment intégrer nos bornes d'arcade 
+                    dans votre univers. Devis personnalisé sous 24h.
                 </p>
                 
-                <form class="contact-form">
+                <form class="contact-form" id="contactForm">
                     <div class="form-group">
-                        <input type="text" class="form-input" placeholder="Votre nom" required>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="Votre nom" 
+                            required
+                            aria-label="Nom"
+                        >
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-input" placeholder="Votre email" required>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            placeholder="Votre email" 
+                            required
+                            aria-label="Email"
+                        >
                     </div>
                     <div class="form-group">
-                        <input type="tel" class="form-input" placeholder="Votre téléphone">
+                        <input 
+                            type="tel" 
+                            class="form-input" 
+                            placeholder="Téléphone (optionnel)"
+                            aria-label="Téléphone"
+                        >
                     </div>
                     <div class="form-group">
-                        <textarea class="form-input" rows="4" placeholder="Décrivez votre projet..." required></textarea>
+                        <textarea 
+                            class="form-input" 
+                            rows="4" 
+                            placeholder="Décrivez votre projet..." 
+                            required
+                            aria-label="Message"
+                        ></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        Lancer la connexion 🚀
+                    <button type="submit" class="btn btn-accent">
+                        Envoyer ma demande
                     </button>
                 </form>
             </div>
         </section>
-    </div>
+    </main>
 
     <!-- Scripts -->
     <script src="cursor.js"></script>

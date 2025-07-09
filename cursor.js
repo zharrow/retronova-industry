@@ -1,214 +1,161 @@
 /**
  * ARCADE CONNECT - CUSTOM CURSOR
- * Curseur personnalisé rétro-futuriste avec effets interactifs
+ * Curseur fluide minimaliste avec effet liquide
  */
 
-class ArcadeCursor {
+class FluidCursor {
     constructor() {
-        this.init();
-        this.bindEvents();
-    }
-
-    init() {
-        // Sélection des éléments du curseur
-        this.cursorDot = document.querySelector('.cursor-dot');
-        this.cursorOutline = document.querySelector('.cursor-outline');
-        
-        // Position initiale
+        this.cursor = null;
+        this.cursorDot = null;
+        this.cursorFluid = null;
         this.mouseX = 0;
         this.mouseY = 0;
-        this.outlineX = 0;
-        this.outlineY = 0;
-        
-        // État du curseur
+        this.currentX = 0;
+        this.currentY = 0;
         this.isHovering = false;
         this.isClicking = false;
         
+        this.init();
+    }
+
+    init() {
         // Vérification mobile
-        this.isMobile = this.checkMobile();
-        
-        if (this.isMobile) {
-            this.disableCursor();
+        if (this.isMobile()) {
             return;
         }
-        
-        // Animation du curseur
-        this.animateCursor();
-        
-        console.log('🎯 Curseur personnalisé initialisé');
+
+        this.createCursor();
+        this.bindEvents();
+        this.animate();
     }
 
-    checkMobile() {
+    isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-               || window.innerWidth <= 768;
+               || window.innerWidth <= 768 
+               || ('ontouchstart' in window);
     }
 
-    disableCursor() {
-        document.body.style.cursor = 'auto';
-        if (this.cursorDot) this.cursorDot.style.display = 'none';
-        if (this.cursorOutline) this.cursorOutline.style.display = 'none';
+    createCursor() {
+        // Conteneur principal du curseur
+        this.cursor = document.createElement('div');
+        this.cursor.className = 'cursor';
+        
+        // Point central
+        this.cursorDot = document.createElement('div');
+        this.cursorDot.className = 'cursor-dot';
+        
+        // Effet fluide
+        this.cursorFluid = document.createElement('div');
+        this.cursorFluid.className = 'cursor-fluid';
+        
+        this.cursor.appendChild(this.cursorDot);
+        this.cursor.appendChild(this.cursorFluid);
+        document.body.appendChild(this.cursor);
     }
 
     bindEvents() {
-        if (this.isMobile) return;
-
         // Mouvement de la souris
         document.addEventListener('mousemove', (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
-            
-            // Animation du point central (plus rapide)
-            if (this.cursorDot) {
-                this.cursorDot.style.left = (this.mouseX - 4) + 'px';
-                this.cursorDot.style.top = (this.mouseY - 4) + 'px';
-            }
         });
 
-        // Événements de clic
+        // États du curseur
         document.addEventListener('mousedown', () => {
             this.isClicking = true;
-            this.updateCursorState();
+            this.cursor.classList.add('click');
         });
 
         document.addEventListener('mouseup', () => {
             this.isClicking = false;
-            this.updateCursorState();
+            this.cursor.classList.remove('click');
         });
 
         // Hover sur éléments interactifs
-        this.bindHoverEvents();
-    }
-
-    bindHoverEvents() {
         const interactiveElements = [
             'a', 'button', '.btn', '.access-card', '.feature-item', 
-            '.form-input', 'input', 'textarea', '[data-cursor="hover"]'
+            '.form-input', 'input', 'textarea', '.nav-dot'
         ];
 
         interactiveElements.forEach(selector => {
             document.querySelectorAll(selector).forEach(element => {
                 element.addEventListener('mouseenter', () => {
                     this.isHovering = true;
-                    this.updateCursorState();
+                    this.cursor.classList.add('hover');
                 });
 
                 element.addEventListener('mouseleave', () => {
                     this.isHovering = false;
-                    this.updateCursorState();
+                    this.cursor.classList.remove('hover');
                 });
             });
         });
 
-        // Curseur spécial pour la borne d'arcade
-        const arcadeMachine = document.querySelector('.arcade-machine-container');
-        if (arcadeMachine) {
-            arcadeMachine.addEventListener('mouseenter', () => {
-                this.setCursorStyle('gaming');
-            });
+        // Masquer/Afficher le curseur
+        document.addEventListener('mouseleave', () => {
+            this.cursor.style.opacity = '0';
+        });
 
-            arcadeMachine.addEventListener('mouseleave', () => {
-                this.setCursorStyle('default');
-            });
-        }
+        document.addEventListener('mouseenter', () => {
+            this.cursor.style.opacity = '1';
+        });
     }
 
-    updateCursorState() {
-        if (!this.cursorDot || !this.cursorOutline) return;
+    animate() {
+        // Animation fluide avec lerp
+        this.currentX += (this.mouseX - this.currentX) * 0.15;
+        this.currentY += (this.mouseY - this.currentY) * 0.15;
 
-        // Suppression des classes d'état
-        document.body.classList.remove('cursor-hover', 'cursor-click');
+        // Position du curseur
+        this.cursor.style.left = this.currentX + 'px';
+        this.cursor.style.top = this.currentY + 'px';
 
-        // Application des nouvelles classes
-        if (this.isClicking) {
-            document.body.classList.add('cursor-click');
-        } else if (this.isHovering) {
-            document.body.classList.add('cursor-hover');
-        }
-    }
-
-    setCursorStyle(style) {
-        if (!this.cursorDot || !this.cursorOutline) return;
-
-        switch (style) {
-            case 'gaming':
-                this.cursorDot.style.background = '#fbbf24'; // Jaune gaming
-                this.cursorOutline.style.borderColor = '#fbbf24';
-                this.cursorOutline.style.transform = 'scale(1.3)';
-                break;
-            
-            case 'loading':
-                this.cursorDot.style.background = '#8b5cf6';
-                this.cursorOutline.style.borderColor = '#8b5cf6';
-                this.cursorOutline.style.animation = 'spin 1s linear infinite';
-                break;
-            
-            case 'success':
-                this.cursorDot.style.background = '#10b981';
-                this.cursorOutline.style.borderColor = '#10b981';
-                break;
-            
-            default:
-                this.cursorDot.style.background = '#06b6d4';
-                this.cursorOutline.style.borderColor = '#8b5cf6';
-                this.cursorOutline.style.transform = 'scale(1)';
-                this.cursorOutline.style.animation = 'none';
-                break;
-        }
-    }
-
-    animateCursor() {
-        if (this.isMobile) return;
-
-        // Animation fluide du contour (plus lent, effet de traînée)
-        this.outlineX += (this.mouseX - this.outlineX) * 0.2;
-        this.outlineY += (this.mouseY - this.outlineY) * 0.2;
-
-        if (this.cursorOutline) {
-            this.cursorOutline.style.left = (this.outlineX - 15) + 'px';
-            this.cursorOutline.style.top = (this.outlineY - 15) + 'px';
+        // Effet de déformation fluide basé sur la vitesse
+        const deltaX = this.mouseX - this.currentX;
+        const deltaY = this.mouseY - this.currentY;
+        const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        // Déformation subtile
+        const scaleX = 1 + Math.min(velocity * 0.003, 0.3);
+        const scaleY = 1 - Math.min(velocity * 0.002, 0.2);
+        const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+        
+        if (this.cursorFluid && velocity > 2) {
+            this.cursorFluid.style.transform = `
+                translate(-50%, -50%) 
+                rotate(${rotation}deg)
+                scaleX(${scaleX}) 
+                scaleY(${scaleY})
+            `;
+        } else if (this.cursorFluid) {
+            this.cursorFluid.style.transform = 'translate(-50%, -50%) scale(1)';
         }
 
-        requestAnimationFrame(() => this.animateCursor());
+        requestAnimationFrame(() => this.animate());
     }
 
-    // Méthodes publiques pour contrôler le curseur
+    // Méthodes publiques
     hide() {
-        if (this.cursorDot) this.cursorDot.style.opacity = '0';
-        if (this.cursorOutline) this.cursorOutline.style.opacity = '0';
+        if (this.cursor) {
+            this.cursor.style.opacity = '0';
+        }
     }
 
     show() {
-        if (this.cursorDot) this.cursorDot.style.opacity = '1';
-        if (this.cursorOutline) this.cursorOutline.style.opacity = '0.7';
-    }
-
-    setLoadingState() {
-        this.setCursorStyle('loading');
-    }
-
-    setSuccessState() {
-        this.setCursorStyle('success');
-        setTimeout(() => this.setCursorStyle('default'), 2000);
-    }
-}
-
-// Initialisation du curseur quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
-    window.arcadeCursor = new ArcadeCursor();
-});
-
-// Gestion des événements de visibilité de la page
-document.addEventListener('visibilitychange', () => {
-    if (window.arcadeCursor) {
-        if (document.hidden) {
-            window.arcadeCursor.hide();
-        } else {
-            window.arcadeCursor.show();
+        if (this.cursor) {
+            this.cursor.style.opacity = '1';
         }
     }
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    window.fluidCursor = new FluidCursor();
 });
 
-// Export pour utilisation dans d'autres modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ArcadeCursor;
-}
+// Masquer le curseur pendant le chargement
+window.addEventListener('load', () => {
+    if (window.fluidCursor) {
+        window.fluidCursor.show();
+    }
+});
